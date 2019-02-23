@@ -4,9 +4,12 @@ from alpha_vantage.timeseries import TimeSeries
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
-import hisa._util
 from hisa.capsule import Capsule
 from hisa.config.app import AppConfig
+
+from hisa._util import (
+    _check_value_error
+)
 
 class Share(Capsule):
     def __init__(self, equity_symbol, interval='daily', minute_interval='1min', start=None, end=None, size='compact'):
