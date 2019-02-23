@@ -1,0 +1,6 @@
+# virtualenvs
+.venv
+
+build
+
+dist
