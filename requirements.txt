@@ -1,0 +1,10 @@
+jupyter
+numpy
+scipy
+matplotlib
+scikit-learn
+matplotlib
+alpha_vantage
+keras
+tweepy
+Flask

@@ -1,0 +1,5 @@
+matplotlib
+alpha_vantage
+keras
+tweepy
+Flask
