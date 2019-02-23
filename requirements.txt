@@ -3,9 +3,9 @@ numpy
 scipy
 matplotlib
 scikit-learn
+six
 matplotlib
 alpha_vantage
 keras
 tweepy
 Flask
-six

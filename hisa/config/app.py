@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from hisa.config import BaseConfig
+
 class AppConfig(BaseConfig):
     NAME                 = 'hisa'
     VERSION              = (0,1,0)
