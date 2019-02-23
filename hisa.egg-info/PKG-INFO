@@ -1,0 +1,13 @@
+Metadata-Version: 1.2
+Name: hisa
+Version: 0.1.0
+Summary: A stock market predictor and model builder
+Home-page: UNKNOWN
+Author: Rittika Adhikari,Sahil Modi,Utkarsh Awasthi
+Author-email: rittika.adhikari@gmail.com,sm34524@gmail.com,navamawasthi@gmail.com
+Maintainer: Rittika Adhikari,Sahil Modi,Utkarsh Awasthi
+Maintainer-email: rittika.adhikari@gmail.com,sm34524@gmail.com,navamawasthi@gmail.com
+License: MIT
+Description: # stock-recommendation
+Keywords: neural,network,machine,deep,learning,tensorflow,stock,market,prediction
+Platform: UNKNOWN

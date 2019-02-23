@@ -9,6 +9,14 @@ import pandas as pd
 
 TYPE_ERROR_STRING = 'Expected {expected_type_name}, got {recieved_type_name} instead.'
 
+
+def _check_value_error(value, values):
+    if value not in values:
+        raise ValueError(TYPE_ERROR_STRING.format(
+            expected_type_name = values,
+            recieved_type_name = value
+        ))
+
 def _raise_type_error(expected_type_name, recieved_type_name):
     raise TypeError(TYPE_ERROR_STRING.format(
         expected_type_name = expected_type_name,

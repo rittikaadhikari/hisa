@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from hisa._util._util import (
+    _check_value_error,
     _check_type,
     _check_str,
     _check_int,
