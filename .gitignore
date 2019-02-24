@@ -7,3 +7,4 @@ dist
 __pycache__/
 hisa.egg*
 *.pyc
+.ipynb_checkpoints/

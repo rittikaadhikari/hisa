@@ -47,6 +47,7 @@ class Share(Capsule):
         self.data.index = pd.to_datetime(self.data.index)
         self.data = self.data.loc[start:end]
         self.data = self.data.rename(columns=lambda x: x.split(' ')[-1])
+        self.data = self.data.astype(float)
 
 
     def plot(self, column, title=None, start=None, end=None, save=False, filename='plot.png'):
@@ -64,6 +65,7 @@ class Share(Capsule):
         for i in range(len(data_cols)):
             if data_cols[i] not in columns:
                 sample = sample.drop(data_cols[i], 1)
+
         p = sample.plot()
         plt.title(title)
         if save:
