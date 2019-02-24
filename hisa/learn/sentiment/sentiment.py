@@ -7,6 +7,8 @@ import pandas as pd
 from pandas.io.json import json_normalize
 import numpy as np
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import argparse
+import os
 
 import csv
 
@@ -75,11 +77,23 @@ class ProcessTweets(object):
         df.to_csv(self.outname, sep=',')
 
 def main():
-    ProcessTweets('../data/apple_tweets.json', '../data/apple.csv').get_tweets()
-    ProcessTweets('../data/capital_one_tweets.json', '../data/capital_one.csv').get_tweets()
-    ProcessTweets('../data/google_tweets.json', '../data/google.csv').get_tweets()
-    ProcessTweets('../data/amazon_tweets.json', '../data/amazon.csv').get_tweets()
-    ProcessTweets('../data/nvidia_tweets.json', '../data/nvidia.csv').get_tweets()
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--input_dir', required=True, help='directory containing json files from twitterscraper')
+    ap.add_argument('--output_dir', required=True, help='directory of resulting sentiment csv files')
+    args = ap.parse_args()
+
+    if(not os.path.exists(args.output_dir)):
+        os.makedirs(args.output_dir)
+
+    files = []
+    for dirpath, dirnames, filenames in os.walk(args.input_dir):
+        for f in filenames:
+            if f.split('.')[-1] == 'json':
+                 files.append((f.split('.')[0], os.path.join(dirpath, f)))
+
+    for f in files:
+        ProcessTweets(f[1], os.path.join(args.output_dir, f[0] + '.csv')).get_tweets()
+
 
 if __name__ == "__main__":
     main()
