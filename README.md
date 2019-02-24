@@ -7,8 +7,8 @@ This project is dedicated to making it easier to view correlation between sentim
   * Twitter Scraping
 
 ## USAGE
-  * `google = hisa.Share('GOOGL', 'google', interval='daily', start='02/19/2019',size='compact')`
-  * `google.generate_twitter_sentiment('out.json', start='02/19/2019')`
+  * `google = hisa.Share('GOOGL', 'google', interval='intraday', minute_interval='60min', start='02/19/2019')`
+  * `google.generate_twitter_sentiment('out.json', start='2019-02-19', end='2019-02-23')`
 
 ## BUILD/INSTALLATION INSTRUCTIONS
   * All
