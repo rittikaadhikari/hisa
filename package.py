@@ -23,7 +23,6 @@ modules           = [
     'hisa.capsule',
     'hisa.learn',
     'hisa.learn.models',
-    'hisa.learn.eval',
     'hisa.learn.sentiment',
     'hisa._util'
 ]
