@@ -25,6 +25,7 @@ modules           = [
     'hisa.learn.models',
     'hisa.learn.eval',
     'hisa.learn.sentiment',
+    'hisa._util'
 ]
 github_username   = 'rittikaadhikari'
 github_repository = 'hisa'

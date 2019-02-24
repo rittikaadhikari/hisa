@@ -1,17 +1,17 @@
 PYTHON = python
 
-install: 
+install:
 	cat requirements/*.txt > requirements.txt
 	pip install -r requirements.txt
 
 	pip install tensorflow-gpu
-	
-	$(PYTHON) setup.py install 
-	
+
+	$(PYTHON) setup.py install
+
 	#bash twitter.sh
 
-clean: 
-	$(PYTHON) setup.py clean 
+clean:
+	$(PYTHON) setup.py clean
 
-all: 
+all:
 	make install clean
