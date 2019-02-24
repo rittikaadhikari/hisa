@@ -10,3 +10,4 @@ keras
 tweepy
 Flask
 nltk
+twitterscraper
