@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from hisa.learn import sentiment
-from hisa.models import linearmodel
-from hisa.models import mlpmodel
-from hisa.models import ridgemodel
-from hisa.models import preprocess
+from hisa.learn.models.linearregression import LinearModel
+from hisa.learn.models.mlpregressor import MLPModel
+from hisa.learn.models.ridgregression import RidgeModel
+from hisa.learn.models.preprocess import PreprocessData
