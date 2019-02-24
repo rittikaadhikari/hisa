@@ -1,12 +1,13 @@
 from __future__ import absolute_import
 
-from alpha_vantage.timeseries import TimeSeries
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
 from hisa.capsule import Capsule
 from hisa.config.app import AppConfig
 from hisa.learn.sentiment.sentiment import ProcessTweets
+import urllib.request
+import json
 
 from hisa._util import (
     _check_value_error
@@ -17,21 +18,27 @@ class Share(Capsule):
         self.symbol = equity_symbol
         self.name = company_name.lower()
         self.key = os.environ['ALPHA_VANTAGE_API_KEY']
-        self.ts = TimeSeries(key=self.key, output_format = 'pandas', retries=10)
         self.data = None
         self.metata = None
         self.interval = interval
         self.minute_interval = minute_interval
         _check_value_error(self.interval, ['intraday','daily','daily_adjusted','weekly'])
         _check_value_error(self.minute_interval, ['1min', '5min', '15min', '30min', '60min'])
+
+        av_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_'+self.interval+'&symbol='+self.symbol+'&interval='+minute_interval+'&apikey='+self.key
+        with urllib.request.urlopen(av_url) as url:
+            json_file = json.loads(url.read().decode())
+
+        key = 'Time Series ('
         if self.interval == 'intraday':
-            self.data, self.meta_data = self.ts.get_intraday(symbol=self.name, interval=self.minute_interval, outputsize=size)
-        elif self.interval == 'daily':
-            self.data, self.meta_data = self.ts.get_daily(symbol=self.name, outputsize=size)
-        elif self.interval == 'daily_adjusted':
-            self.data, self.meta_data = self.ts.get_daily_adjusted(symbol=self.name, outputsize=size)
+            key += self.minute_interval+')'
+        elif self.interval == 'daily' or self.interval == 'daily_adjusted':
+            key += 'Daily)'
         elif self.interval == 'weekly':
-            self.data, self.meta_data = self.ts.get_weekly(symbol=self.name, outputsize=size)
+            key = 'Weekly Time Series'
+        j = json_file[key]
+        self.data = pd.DataFrame.from_dict(j, orient='index')
+        self.data.index.name = 'date'
 
         if start == None:
             start = self.data.index[0]
@@ -88,7 +95,7 @@ class Share(Capsule):
         command += ' -o ' + output_path
         command += ' --lang en'
         command += ' -bd ' + str(start)
-        command += ' --ed ' + str(end)
+        command += ' -ed ' + str(end)
 
         print(command)
         os.system(command)
