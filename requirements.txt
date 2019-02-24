@@ -4,8 +4,9 @@ scipy
 matplotlib
 scikit-learn
 six
+nltk
 matplotlib
+alpha_vantage
+keras
 tweepy
 Flask
-nltk
-twitterscraper

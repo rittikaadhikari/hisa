@@ -20,11 +20,11 @@ license           = 'MIT'
 modules           = [
     'hisa',
     'hisa.config',
+    'hisa._util',
     'hisa.capsule',
     'hisa.learn',
     'hisa.learn.models',
     'hisa.learn.sentiment',
-    'hisa._util'
 ]
 github_username   = 'rittikaadhikari'
 github_repository = 'hisa'
