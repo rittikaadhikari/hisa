@@ -9,4 +9,4 @@ alpha_vantage
 keras
 tweepy
 Flask
-pandas
+nltk

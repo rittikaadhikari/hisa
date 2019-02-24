@@ -37,7 +37,7 @@ class ProcessTweets(object):
                 neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet['text']))
                 temp.append([neg, pos, neu])
             else:
-                sentiments[start_date.strftime("%Y-%m-%dT%H:%M:%S")] = np.mean(np.asarray(temp), axis=0)
+                sentiments[start_date.strftime("%Y-%m-%d %H:%M:%S")] = np.mean(np.asarray(temp), axis=0)
                 temp = []
                 start_date = end_date
                 end_date = start_date + timedelta(hours=1)
