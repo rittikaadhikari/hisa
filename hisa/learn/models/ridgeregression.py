@@ -5,38 +5,45 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import argparse
+from sklearn.metrics import accuracy_score
 
 class RidgeModel():
-    def __init__(self, filename, alpha=0.3, cv=3):
-        self.data = data
+    def __init__(self, filename, stock_filename, company, alpha=0.3):
         self.df = pd.read_csv(filename)
-        self.x = [self.df['neg'], self.df['pos'], self.df['neu']]
-        self.y = self.df['date']
+        stock = pd.read_csv(stock_filename)
+        dates = [int(pd.to_datetime(date).strftime("%s")) for date in self.df['date']]
+        self.x = np.asarray([dates, self.df['neg'], self.df['pos'], self.df['neu']], dtype=float).T
+        self.y = np.asarray(stock[company + '_open'])
         self.alpha = alpha
-        self.cv = cv
-        self.model = Ridge(alpha=alpha, cv=cv, normalize=True)
+        self.model = linear_model.Ridge(alpha=alpha, normalize=True)
 
     def train(self):
         self.model.fit(self.x, self.y)
 
     def predict(self):
-        self.model.predict(self.x, self.y)
+        return self.model.predict(self.x)
 
+    def mape(self):
+        self.train()
+        preds = self.predict()
+        score = 0
+        for count, pred in enumerate(preds, start=0):
+            score += abs(pred - self.y[count])
+        score /= len(self.y)
+        return score
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--feat_vec', required=True, help='feature vectors created using preprocess')
+    ap.add_argument('--stock', required=True, help='stock values')
+    ap.add_argument('--company', required=True)
     args = ap.parse_args()
 
-    files = []
-    for dirpath, dirnames, filenames in os.walk(args.input_dir):
-        for f in filenames:
-            if f.split('.')[-1] == 'json':
-                 files.append((f.split('.')[0], os.path.join(dirpath, f)))
+    model = RidgeModel(args.feat_vec, args.stock, args.company)
+    print("MAPE SCORE: ", model.mape())
 
-    for f in files:
-        ProcessTweets(f[1], os.path.join(args.output_dir, f[0] + '.csv')).get_tweets()
-
+    return 0
 
 if __name__ == "__main__":
     main()
