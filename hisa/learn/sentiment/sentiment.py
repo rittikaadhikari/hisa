@@ -27,16 +27,30 @@ class ProcessTweets(object):
         return polarity_scores['neg'], polarity_scores['pos'], polarity_scores['neu']
 
     def get_tweets(self):
-        start_date = pd.to_datetime(self.json[0]['timestamp'])
+        df = pd.DataFrame.from_dict(self.json)
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df.sort_values(by=['timestamp'], inplace=True, ascending=True)
+        df.reset_index(inplace=True)
+
+        self.json = df.to_dict()
+
+        timestamps = self.json['timestamp']
+
+        start_date = pd.to_datetime(timestamps[0])
         end_date = start_date + timedelta(hours=1)
 
         sentiments = dict()
         temp = []
 
-        for tweet in self.json:
-            curr_time = datetime.strptime(tweet['timestamp'], '%Y-%m-%dT%H:%M:%S')
-            if curr_time >= start_date and curr_time < end_date or curr_time < start_date:
-                neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet['text']))
+        tweets = self.json['text']
+
+        for count, tweet in enumerate(tweets, start=0):
+            tweet = tweets[tweet]
+            curr_time = timestamps[count]
+            if isinstance(tweet, int):
+                print(tweet)
+            if curr_time >= start_date and curr_time < end_date:
+                neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet))
                 temp.append([neg, pos, neu])
             else:
                 means = np.mean(np.asarray(temp), axis=0)
@@ -45,7 +59,7 @@ class ProcessTweets(object):
                 temp = []
                 start_date = end_date
                 end_date = start_date + timedelta(hours=1)
-                neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet['text']))
+                neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet))
                 temp.append([neg, pos, neu])
 
         tmp_df = pd.DataFrame.from_dict(sentiments)
