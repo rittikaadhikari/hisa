@@ -15,17 +15,18 @@ class PreprocessData(object):
         for filename in self.filenames:
             company_name = filename.split('/')[2].split('.')[0]
             dates, company = self.preprocess(filename)
-            company_dict = dict.fromkeys(dates, {})
+            # dates = [pd.to_datetime(date) for date in dates]
+            company_dict = dict.fromkeys(dates, [])
 
             for count, date in enumerate(dates, start=0):
-                company_dict[date]['neg'] = company[count][0]
-                company_dict[date]['pos'] = company[count][1]
-                company_dict[date]['neu'] = company[count][2]
+                company_dict[date] = company[count]
 
             tmp_df = pd.DataFrame.from_dict(company_dict)
-            neg = tmp_df.loc['neg', :]
-            pos = tmp_df.loc['pos', :]
-            neu = tmp_df.loc['neu', :]
+            print(tmp_df)
+            break
+            neg = tmp_df.iloc[0, :]
+            pos = tmp_df.iloc[1, :]
+            neu = tmp_df.iloc[2, :]
             df = pd.DataFrame()
             df['neg'] = neg
             df['pos'] = pos

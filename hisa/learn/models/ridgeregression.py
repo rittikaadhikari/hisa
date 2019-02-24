@@ -1,77 +1,42 @@
 from __future__ import absolute_import
 
-from sklearn.linear_model import Ridge
-# from hisa.learn import Learn
+from sklearn import linear_model
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.pylab import rcParams
 import random
 
 class RidgeModel():
-    def __init__(self, data, predictors, alpha, models_to_plot={}):
-        self.alpha = alpha
+    def __init__(self, filename, alpha=0.3, cv=3):
         self.data = data
-        self.predictors=predictors
-        self.model = Ridge(alpha=alpha, normalize=True)
-
+        self.df = pd.read_csv(filename)
+        self.x = [self.df['neg'], self.df['pos'], self.df['neu']]
+        self.y = self.df['date']
+        self.alpha = alpha
+        self.cv = cv
+        self.model = Ridge(alpha=alpha, cv=cv, normalize=True)
 
     def train(self):
-        self.model.fit(self.data[self.predictors], data['y'])
-
+        self.model.fit(self.x, self.y)
 
     def predict(self):
-        self.model.predict(self.data[self.predictors])
+        self.model.predict(self.x, self.y)
 
 
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--feat_vec', required=True, help='feature vectors created using preprocess')
+    args = ap.parse_args()
 
-def ridge_regression(data, predictors, alpha, models_to_plot={}):
-    #Fit the model
-    ridgereg = Ridge(alpha=alpha,normalize=True)
-    ridgereg.fit(data[predictors],data['y'])
-    y_pred = ridgereg.predict(data[predictors])
+    files = []
+    for dirpath, dirnames, filenames in os.walk(args.input_dir):
+        for f in filenames:
+            if f.split('.')[-1] == 'json':
+                 files.append((f.split('.')[0], os.path.join(dirpath, f)))
 
-    #Check if a plot is to be made for the entered alpha
-    if alpha in models_to_plot:
-        plt.subplot(models_to_plot[alpha])
-        plt.tight_layout()
-        plt.plot(data['x'],y_pred)
-        plt.plot(data['x'],data['y'],'.')
-        plt.title('Plot for alpha: %.3g'%alpha)
+    for f in files:
+        ProcessTweets(f[1], os.path.join(args.output_dir, f[0] + '.csv')).get_tweets()
 
-    #Return the result in pre-defined format
-    rss = sum((y_pred-data['y'])**2)
-    ret = [rss]
-    ret.extend([ridgereg.intercept_])
-    ret.extend(ridgereg.coef_)
-    return ret
 
-x = np.array([i*np.pi/180 for i in range(60,300,4)])
-np.random.seed(10)  #Setting seed for reproducability
-y = np.sin(x) + np.random.normal(0,0.15,len(x))
-data = pd.DataFrame(np.column_stack([x,y]),columns=['x','y'])
-plt.plot(data['x'],data['y'],'.')
-
-for i in range(2,16):  #power of 1 is already there
-    colname = 'x_%d'%i      #new var will be x_power
-    data[colname] = data['x']**i
-
-predictors=['x']
-predictors.extend(['x_%d'%i for i in range(2,16)])
-print(data.head())
-
-#Set the different values of alpha to be tested
-alpha_ridge = [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]
-
-#Initialize the dataframe for storing coefficients.
-col = ['rss','intercept'] + ['coef_x_%d'%i for i in range(1,16)]
-ind = ['alpha_%.2g'%alpha_ridge[i] for i in range(0,10)]
-coef_matrix_ridge = pd.DataFrame(index=ind, columns=col)
-
-models_to_plot = {1e-15:231, 1e-10:232, 1e-4:233, 1e-3:234, 1e-2:235, 5:236}
-for i in range(10):
-    coef_matrix_ridge.iloc[i,] = ridge_regression(data, predictors, alpha_ridge[i], models_to_plot)
-
-print(coef_matrix_ridge)
-
-plt.show()
+if __name__ == "__main__":
+    main()
