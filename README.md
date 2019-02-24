@@ -8,7 +8,7 @@ This project is dedicated to making it easier to view correlation between sentim
 
 ## USAGE
   * [USAGE EXAMPLE]
-  
+
 ## BUILD/INSTALLATION INSTRUCTIONS
   * All
     * Run `make` in project directory
@@ -16,5 +16,5 @@ This project is dedicated to making it easier to view correlation between sentim
 ## Contributor Guide
 [LINK TO CONTRIBUTING.md]
 
-## License 
+## License
 This project is under MIT license
