@@ -3,6 +3,8 @@ import json
 import datetime
 from datetime import datetime
 from datetime import timedelta
+import pandas as pd
+from pandas.io.json import json_normalize
 import numpy as np
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
@@ -25,7 +27,7 @@ class ProcessTweets(object):
         return polarity_scores['neg'], polarity_scores['pos'], polarity_scores['neu']
 
     def get_tweets(self):
-        start_date = datetime.strptime(self.json[0]['timestamp'], '%Y-%m-%dT%H:%M:%S')
+        start_date = pd.to_datetime(self.json[0]['timestamp'])
         end_date = start_date + timedelta(hours=1)
 
         sentiments = dict()
@@ -37,23 +39,26 @@ class ProcessTweets(object):
                 neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet['text']))
                 temp.append([neg, pos, neu])
             else:
-                sentiments[start_date.strftime("%Y-%m-%d %H:%M:%S")] = np.mean(np.asarray(temp), axis=0)
+                means = np.mean(np.asarray(temp), axis=0)
+                obj = {'neg': means[0], 'pos': means[1], 'neu': means[2]}
+                sentiments[start_date.strftime("%Y-%m-%d %H:%M:%S")] = obj
                 temp = []
                 start_date = end_date
                 end_date = start_date + timedelta(hours=1)
                 neg, pos, neu = self.get_sentiment(self.clean_tweet(tweet['text']))
                 temp.append([neg, pos, neu])
 
-        data = open(self.outname, 'w')
-        csvwriter = csv.writer(data)
-        count = 0
-        for sentiment in [sentiments]:
-            if count == 0:
-                header = sentiment.keys()
-                csvwriter.writerow(header)
-                count += 1
-            csvwriter.writerow(sentiment.values())
-        data.close()
+        tmp_df = pd.DataFrame.from_dict(sentiments)
+        neg = tmp_df.loc['neg', :]
+        pos = tmp_df.loc['pos', :]
+        neu = tmp_df.loc['neu', :]
+        df = pd.DataFrame()
+        df['neg'] = neg
+        df['pos'] = pos
+        df['neu'] = neu
+        df = df.set_index(pd.to_datetime(tmp_df.columns.values))
+        df.index.name = 'date'
+        df.to_csv(self.outname, sep=',')
 
 def main():
     ProcessTweets('../data/apple_tweets.json', '../data/apple.csv').get_tweets()
